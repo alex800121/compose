@@ -17,21 +17,17 @@ type family CountArgs a where
   CountArgs (c -> a) = S (CountArgs a)
   CountArgs a = Z
 
-class Reduce a b
-instance Reduce a a
-instance Reduce a b => Reduce a (c -> b)
+type family R f i o where
+  R (a -> b) a b = a -> b
+  R f (c -> i) (c -> o) = R f i o
 
-class Compose a b i o | i -> a, o -> b where
-  compose :: (a -> b) -> i -> o
-
-instance {-# OVERLAPS #-} Compose a b a b where
+class (R f i o ~ f) => Reduce f i o where
+  compose :: f -> i -> o
+instance (b ~ o) => Reduce (a -> b) a o where
   compose = id
-
-instance Compose a b i o => Compose a b (c -> i) (c -> o) where
-  compose f x c = compose f (x c)
+instance (R (a -> b) i o ~ R (a -> b) (c -> i) (d -> o), Reduce (a -> b) i o, c ~ d) => Reduce (a -> b) (c -> i) (d -> o) where
+  compose f i x = compose f (i x)
+  
 
 head' :: String -> Char
 head' = head
-
-show' :: String -> String
-show' = show
