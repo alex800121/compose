@@ -101,4 +101,5 @@ test-suite compose-test
     -- Test dependencies.
     build-depends:
         base ^>=4.17.0.0,
-        compose
+        compose,
+        QuickCheck

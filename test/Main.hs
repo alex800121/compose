@@ -1,4 +1,7 @@
 module Main (main) where
 
+import Test.QuickCheck
+import Compose
+
 main :: IO ()
-main = putStrLn "Test suite not yet implemented."
+main = undefined
