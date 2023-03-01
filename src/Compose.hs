@@ -16,10 +16,12 @@ class Compose a b i where
 instance {-# INCOHERENT #-} (HasArgs a b i ~ b, a ~ i) => Compose a b i where
   compose = id
 
-instance {-# OVERLAPS #-} (HasArgs a b (c -> d) ~ (c -> HasArgs a b d), Compose a b d) => Compose a b (c -> d) where
+instance (HasArgs a b (c -> d) ~ (c -> HasArgs a b d), Compose a b d) => Compose a b (c -> d) where
+-- instance {-# OVERLAPS #-} (HasArgs a b (c -> d) ~ (c -> HasArgs a b d), Compose a b d) => Compose a b (c -> d) where
   compose f x y = compose f (x y)
 
 (.:) :: Compose a b i => (a -> b) -> i -> HasArgs a b i
 (.:) = compose
 
-infixr 9 .:
+-- infixr 9 .:
+infixl 9 .:
