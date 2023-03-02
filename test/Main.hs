@@ -20,4 +20,4 @@ main = quickCheck $ verbose $
     g = (show .: zipWith3) foldr a
     a = [(+), (*), (-), const]
     h :: Int -> [Int] -> [Int]
-    h = (
+    h = (map .: (+))
