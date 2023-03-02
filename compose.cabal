@@ -102,4 +102,5 @@ test-suite compose-test
     build-depends:
         base ^>=4.17.0.0,
         compose,
-        QuickCheck
+        QuickCheck,
+        composition
