@@ -4,4 +4,4 @@ import Test.QuickCheck
 import Compose
 
 main :: IO ()
-main = undefined
+main = putStrLn "test here"
