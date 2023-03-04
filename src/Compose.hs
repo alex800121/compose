@@ -33,16 +33,23 @@ type family CountArgs (a :: Type) :: Nat where
   CountArgs (a -> b) = S (CountArgs b)
   CountArgs b = Z
 
-class HasArgs a b i o | i b -> o, a o -> i, i o -> a b where
+class HasArgs a b | a -> b, b -> a where
+  apply :: (a -> c) -> b -> c
+instance {-# INCOHERENT #-} a ~ b => HasArgs a b where
+  apply = id
+instance HasArgs a b => HasArgs (c -> a) (c -> b) where
+  apply = apply
+
+class Compose a b i o | i b -> o, a o -> i, i o -> a, i o -> b where
   compose :: (a -> b) -> i -> o
 
-instance {-# OVERLAPS #-} (CountArgs a ~ CountArgs i, a ~ i, b ~ o) => HasArgs a b i o where
-  compose = id
+instance {-# OVERLAPS #-} (HasArgs a i, b ~ o) => Compose a b i o where
+  compose = apply
   
-instance {-# OVERLAPS #-} HasArgs a b i o => HasArgs a b (c -> i) (c -> o) where
+instance {-# OVERLAPS #-} Compose a b i o => Compose a b (c -> i) (c -> o) where
   compose f x = compose f . x
 
-(.:) :: HasArgs a b i o => (a -> b) -> i -> o
+(.:) :: Compose a b i o => (a -> b) -> i -> o
 (.:) = compose
 
 -- infixr 8 .:
